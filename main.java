@@ -16,6 +16,18 @@ class Player{
 
 public class main {
 	static int checkGameStatus(char[][] gameBoard, Player[] players, int turn){
+		//tie check
+		int tieFlag = 0;
+		for(int i=0; i<gameBoard.length; i++){
+			for(int j=0; j<gameBoard.length; j++){
+				if(gameBoard[i][j] == players[turn].type){
+					tieFlag++;
+				}
+			}
+			if(tieFlag == 5){
+				return 0;
+			}
+		}
 		//row check
 		for(int i=0; i<gameBoard.length; i++){
 			int flag = 0;
@@ -70,10 +82,20 @@ public class main {
 		return 2;
 	}
 	static void printBoard(char[][] gameBoard){
+		String magenta = "\u001B[35m";
+		String green = "\u001B[32m";
+		String resetColor = "\u001B[0m";
+
 		System.out.println("|---|---|---|");
 		for(int i=0; i<gameBoard.length; i++){
 			for(int j=0; j<gameBoard.length; j++){
-				System.out.print("| "+gameBoard[i][j]+" ");
+				if(gameBoard[i][j] == 'o'){
+					System.out.print("| "+magenta+gameBoard[i][j]+resetColor+" ");
+				}else if(gameBoard[i][j] == 'x'){
+					System.out.print("| "+green+gameBoard[i][j]+resetColor+" ");
+				}else{
+					System.out.print("| "+gameBoard[i][j]+" ");
+				}
 			}
 			System.out.println("|");
 			System.out.println("|---|---|---|");
@@ -101,6 +123,7 @@ public class main {
 			printBoard(gameBoard);
 			int status = checkGameStatus(gameBoard,players,turn);
 			if(status == 0){
+				System.out.println();
 				System.out.println("THIS GAME IS A TIE");
 				break;
 			}else if(status == 1){
