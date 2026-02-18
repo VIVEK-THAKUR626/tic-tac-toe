@@ -14,8 +14,62 @@ class Player{
 	}
 }
 
-public class main { 
-	static void updateBoard(char[][] gameBoard){
+public class main {
+	static int checkGameStatus(char[][] gameBoard, Player[] players, int turn){
+		//row check
+		for(int i=0; i<gameBoard.length; i++){
+			int flag = 0;
+			for(int j=0; j<gameBoard.length; j++){
+				if(gameBoard[i][j] == players[turn].type){
+					flag++;
+				}
+			}
+			if(flag == 3){
+				return 1;
+			}
+		}
+
+		//column check
+		for(int i=0; i<gameBoard.length; i++){
+			int flag = 0;
+			for(int j=0; j<gameBoard.length; j++){
+				if(gameBoard[j][i] == players[turn].type){
+					flag++;
+				}
+			}
+			if(flag == 3){
+				return 1;
+			}
+		}
+
+		//primary diagonal check
+		int flag = 0;
+		for(int i=0; i<gameBoard.length; i++){
+			if(gameBoard[i][i] == players[turn].type){
+				flag++;
+			}
+			if(flag == 3){
+				return 1;
+			}
+		}
+
+		//secondary diagonal check
+		flag = 0;
+		for (int i = 0; i < gameBoard.length; i++) {
+			for(int j=0; j<gameBoard.length; j++){
+				if(i+j == 2){
+					if(gameBoard[i][j] == players[turn].type){
+						flag++;
+					}
+				}
+			}
+			if(flag == 3){
+				return 1;
+			}
+		}
+		return 2;
+	}
+	static void printBoard(char[][] gameBoard){
 		System.out.println("|---|---|---|");
 		for(int i=0; i<gameBoard.length; i++){
 			for(int j=0; j<gameBoard.length; j++){
@@ -23,6 +77,38 @@ public class main {
 			}
 			System.out.println("|");
 			System.out.println("|---|---|---|");
+		}
+	}
+	static void gameLoop(Player[] players, char[][]gameBoard, int turn){
+		while (true) {
+			int marked = 0;
+			System.out.println("Its "+players[turn].name+"'s turn");
+			System.out.println("Choose your place to mark "+players[turn].type);
+			char choice = players[turn].enterChoice();
+
+			for(int i=0;i<gameBoard.length; i++){
+				for(int j=0; j<gameBoard.length; j++){
+					if(gameBoard[i][j] == choice){
+						gameBoard[i][j] = players[turn].type;
+						marked = 1;
+						break;
+					}
+				}
+				if(marked == 1){
+					break;
+				}
+			}
+			printBoard(gameBoard);
+			int status = checkGameStatus(gameBoard,players,turn);
+			if(status == 0){
+				System.out.println("THIS GAME IS A TIE");
+				break;
+			}else if(status == 1){
+				System.out.println();
+				System.out.println(players[turn].name+" WON THE GAME");
+				break;
+			}
+			turn = (turn == 0) ? 1 : 0;
 		}
 	}
 	public static void main(String[] args){
@@ -57,27 +143,7 @@ public class main {
 		System.out.println("|---|---|---|");
 		System.out.println("| 7 | 8 | 9 |");
 		System.out.println("|---|---|---|");
-
-		while (true) {
-			int marked = 0;
-			System.out.println("Its "+players[turn].name+"'s turn");
-			System.out.println("Choose your place to mark "+players[turn].type);
-			char choice = players[turn].enterChoice();
-
-			for(int i=0;i<gameBoard.length; i++){
-				for(int j=0; j<gameBoard.length; j++){
-					if(gameBoard[i][j] == choice){
-						gameBoard[i][j] = players[turn].type;
-						marked = 1;
-						break;
-					}
-				}
-				if(marked == 1){
-					break;
-				}
-			}
-			updateBoard(gameBoard);
-			turn = (turn == 0) ? 1 : 0;
-		}
+		
+		gameLoop(players, gameBoard, turn);
 	}
 }
