@@ -107,7 +107,7 @@ public class main {
 			System.out.println("Its "+players[turn].name+"'s turn");
 			System.out.println("Choose your place to mark "+players[turn].type);
 			char choice = players[turn].enterChoice();
-
+			
 			for(int i=0;i<gameBoard.length; i++){
 				for(int j=0; j<gameBoard.length; j++){
 					if(gameBoard[i][j] == choice){
@@ -120,6 +120,24 @@ public class main {
 					break;
 				}
 			}
+			if(marked == 0){
+				int status = checkGameStatus(gameBoard,players,turn);
+				if(status == 0){
+					System.out.println();
+					System.out.println("THIS GAME IS A TIE");
+					return;
+				}else if(status == 1){
+					System.out.println();
+					System.out.println(players[turn].name+" WON THE GAME");
+					return;
+				}else{
+					System.out.println("CHOOSE A VALID POSITION");
+					System.out.println();
+					gameLoop(players, gameBoard, turn);
+					break;
+				}
+			}
+
 			printBoard(gameBoard);
 			int status = checkGameStatus(gameBoard,players,turn);
 			if(status == 0){
